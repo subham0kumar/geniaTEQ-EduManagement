@@ -1,6 +1,8 @@
-import { Edit, Trash } from "lucide-react";
+import { PlusCircle, Trash } from "lucide-react";
+import { useState } from "react";
 import { useStudentData } from "../../../context/context";
 import { Button } from "../ui/button";
+import UpdateStudentsForm from "./UpdateStudentForm";
 
 const getPerformanceColor = (performance) => {
   switch (performance[0]) {
@@ -20,7 +22,8 @@ const getPerformanceColor = (performance) => {
 };
 
 const StudentCard = ({ ...student }) => {
-  const { deleteStudent, editStudent } = useStudentData();
+  const [open, setOpen] = useState(false);
+  const { deleteStudent, fetchStudentById } = useStudentData();
   // const byteArray = new Uint8Array(student.profile_image.data);
   // const base64String = Buffer.from(byteArray).toString("base64");
   return (
@@ -61,15 +64,22 @@ const StudentCard = ({ ...student }) => {
       </div>
       <span className="gap-4 flex-col flex md:flex-row md:w-1/3 w-full items-center justify-end">
         <Button
-          className="sm:w-auto w-full bg-red-500" 
-         
+          className="sm:w-auto w-full bg-red-500"
           onClick={() => deleteStudent(student.id)}
         >
           <Trash /> <h4>Delete Student</h4>
         </Button>
-        <Button className="sm:w-auto w-full">
-          <Edit /> <h4>Update Student</h4>
+        <Button
+          className="md:w-auto w-full flex items-center gap-2 py-5"
+          onClick={() => {
+            setOpen(true);
+            fetchStudentById(student.id);
+          }}
+        >
+          <PlusCircle />
+          Update Student
         </Button>
+        <UpdateStudentsForm id={student.id} open={open} setOpen={setOpen} />
       </span>
     </div>
   );
